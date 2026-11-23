@@ -125,6 +125,112 @@ body[data-theme="neon"] .progress-wrap{background:rgba(5,24,36,.65)}
 @media(max-width:780px){.theme-strip{align-items:flex-start;flex-direction:column;gap:9px}.theme-options{width:100%}.theme-option{flex:1;justify-content:center}}
 @media(max-width:620px){.theme-strip{margin-bottom:12px;padding:10px}.theme-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}.theme-option{padding:5px 3px;font-size:.62rem;gap:4px}.theme-option .preview{width:16px;height:18px}.world-art .sun-disc{height:45px;width:45px;right:10%}.world-art .tree.t3{display:none!important}}
 @media(prefers-reduced-motion:reduce){.world-art *{animation:none!important}.progress-fill{transition:none}}
+
+/* v1.2 — THE MOSSY MEADOW. True interactive illustrated tile system; no board is baked into an image. */
+body[data-theme="meadow"]{
+ --bg:#f4f5d8;--ink:#33462e;--muted:#617356;--mint:#4c8956;--blue:#4878aa;--amber:#a66a27;--pink:#bb514b;
+ --edge:#c7d3b3;--shadow:0 17px 40px #6377472c;--panel-bg:linear-gradient(155deg,#fffefa,#f4f5e8);
+ --soft-bg:#eef3dc;--soft-active:#dce9bd;--tile-top:#b7d291;--tile-bottom:#8bb371;--tile-open:#b8d48b;
+ --scene-top:#d5e7d1;--scene-bottom:#b9d4a5;--hill-one:#a6ce86;--hill-two:#83b875;
+ --page-top:#eef4de;--page-bottom:#fcf1d9;--sky-light:#fff1b9;color-scheme:light;
+}
+body[data-theme="meadow"] .theme-option.active{background:#e1ecbe}
+body[data-theme="meadow"] .board-well{
+ min-height:510px;padding:54px 26px 33px;
+ border:9px solid #d2b88a;border-radius:25px;
+ background-image:linear-gradient(180deg,#f6f5d721 0%,#8baf7430 100%),url('assets/meadow-scene.webp');
+ background-position:center;background-size:cover;
+ box-shadow:inset 0 0 0 3px #fff3c886,inset 0 8px 24px #d4a96d65,0 7px 0 #aa885a,0 16px 28px #61764133;
+}
+body[data-theme="meadow"] .world-art{display:none}
+.meadow-story-sign{display:none}
+body[data-theme="meadow"] .meadow-story-sign{
+ display:flex;flex-direction:column;position:absolute;left:16px;top:12px;z-index:2;
+ border:1px solid #fff2c3c9;border-radius:11px;padding:6px 12px 7px;
+ background:#fff9d4d8;color:#52713b;box-shadow:0 2px 6px #60764428;
+ pointer-events:none;text-shadow:0 1px #fff9d9;
+}
+.meadow-story-sign strong{font-size:.68rem;letter-spacing:.13em;line-height:1.25}
+.meadow-story-sign small{font-size:.59rem;line-height:1.4;color:#688251}
+body[data-theme="meadow"] .board{
+ position:relative;z-index:2;gap:0;flex:0 0 auto;
+ padding:12px;border:0;border-radius:17px;
+ background:repeating-linear-gradient(96deg,#d49d60 0 7px,#bf8250 7px 10px,#ba7a4a 10px 20px,#d4a167 20px 29px);
+ box-shadow:inset 0 0 0 3px #714826, inset 0 0 0 7px #edc48b,0 5px 0 4px #775335,0 14px 24px #363a205e;
+ backdrop-filter:none;
+ transform:perspective(1400px) rotateX(3deg);
+}
+body[data-theme="meadow"] .cell{
+ border:0;border-radius:0;box-shadow:none;
+ background-image:url('assets/earth-0.webp');background-position:center;background-repeat:no-repeat;background-size:100% 100%;
+ transition:filter .13s,transform .13s;
+ color:#243f29;text-shadow:0 1px 0 #fffff6aa,0 2px 1px #1c3e2544;
+ font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;
+ font-weight:1000;font-size:calc(var(--cell)*.62);
+}
+body[data-theme="meadow"] .cell.t1{background-image:url('assets/earth-1.webp')}
+body[data-theme="meadow"] .cell.t2{background-image:url('assets/earth-2.webp')}
+body[data-theme="meadow"] .cell.t3{background-image:url('assets/earth-3.webp')}
+body[data-theme="meadow"] .cell:not(.revealed):hover{filter:brightness(1.12) saturate(1.08);transform:translateY(-3px);z-index:3}
+body[data-theme="meadow"] .cell:not(.revealed):active{transform:translateY(1px)}
+body[data-theme="meadow"] .cell.revealed{
+ background-image:url('assets/grass-0.webp');background-color:#91bf71;background-position:center;background-size:100% 100%;
+ border:0;box-shadow:inset 0 0 0 1px #6c9e5638, inset 0 4px 7px #46753a19;
+ text-shadow:0 2px 0 #fffffe9e,1px 3px 1px #41623144;
+}
+body[data-theme="meadow"] .cell.revealed.t1{background-image:url('assets/grass-1.webp')}
+body[data-theme="meadow"] .cell.revealed.t2{background-image:url('assets/grass-2.webp')}
+body[data-theme="meadow"] .cell.revealed.t3{background-image:url('assets/grass-3.webp')}
+body[data-theme="meadow"] .cell.revealed:not(.mine):hover{filter:brightness(1.06)}
+body[data-theme="meadow"] .cell.flagged:not(.revealed){background-color:transparent;isolation:isolate}
+body[data-theme="meadow"] .cell.flagged svg{display:none}
+body[data-theme="meadow"] .cell.flagged::after{
+ content:"";position:absolute;width:97%;height:108%;left:2%;bottom:6%;
+ background:url('assets/meadow-flag.svg') center bottom/contain no-repeat;
+ filter:drop-shadow(1px 3px 2px #3b40224d);pointer-events:none;
+}
+body[data-theme="meadow"] .cell.mine{
+ background-image:radial-gradient(ellipse at center,#4c3c28 28%,#6f6732 53%,#9cbd69 70%)!important;
+ border-radius:5px;box-shadow:inset 0 3px 8px #302e2299;
+}
+body[data-theme="meadow"] .cell.mine svg{display:none}
+body[data-theme="meadow"] .cell.mine::after{
+ content:"";position:absolute;inset:-5%;background:url('assets/meadow-mole.svg') center/contain no-repeat;
+ pointer-events:none;filter:drop-shadow(0 3px 2px #462e2999);
+}
+body[data-theme="meadow"] .cell.defused{background-image:radial-gradient(circle,#92de95,#5c9f4b)!important}
+body[data-theme="meadow"] .cell.defused::after{opacity:.8}
+body[data-theme="meadow"] .cell.wrong.flagged::after{display:none}
+body[data-theme="meadow"] .cell.wrong{box-shadow:inset 0 0 0 3px #d65f47}
+body[data-theme="meadow"] .cell.hint{outline-color:#ffe488;outline-width:3px;z-index:5}
+body[data-theme="meadow"] .cell.n1{color:#276dbc}
+body[data-theme="meadow"] .cell.n2{color:#267b32}
+body[data-theme="meadow"] .cell.n3{color:#d64b35}
+body[data-theme="meadow"] .cell.n4{color:#8254ad}
+body[data-theme="meadow"] .cell.n5{color:#b64854}
+body[data-theme="meadow"] .cell.n6{color:#13888a}
+body[data-theme="meadow"] .cell.n7{color:#94622e}
+body[data-theme="meadow"] .cell.n8{color:#4e5c4a}
+body[data-theme="meadow"] .progress-fill{background:linear-gradient(90deg,#61ad56,#e7c76c)}
+body[data-theme="meadow"] .coach-output b{color:#36774a}
+body[data-theme="meadow"] .footer b{color:#2f784a}
+body[data-theme="meadow"] .stat-value.green{color:#377f47}
+body[data-theme="meadow"] .pill{color:#406d43}
+body[data-theme="meadow"] .logo svg path:first-child{stroke:#61914e}
+.preview.meadow{background:linear-gradient(#cce6c2 0 47%,#a7c677 47% 100%)}
+.preview.meadow::after{background:#ae7144;bottom:-4px;height:11px;width:22px;border:2px solid #d4a36d;border-radius:3px;left:0}
+.preview.meadow::before{content:"✿";position:absolute;left:3px;top:1px;font-size:11px;color:#fff4ba;text-shadow:0 0 2px #5e944f}
+@media(max-width:620px){
+ body[data-theme="meadow"] .board-well{padding:36px 11px 27px;min-height:420px;border-width:5px;border-radius:15px}
+ body[data-theme="meadow"] .board{padding:8px;border-radius:11px;transform:none}
+ body[data-theme="meadow"] .board[data-cols="8"]{--cell:min(38px,max(26px,calc((100vw - 100px) / 8)))!important}
+ body[data-theme="meadow"] .meadow-story-sign{left:8px;top:8px;padding:4px 7px}
+ .meadow-story-sign strong{font-size:.55rem}.meadow-story-sign small{display:none}
+ .theme-options{grid-template-columns:repeat(5,minmax(0,1fr));}
+ .theme-option{font-size:.57rem;gap:2px}
+}
+@media(prefers-reduced-motion:reduce){body[data-theme="meadow"] .cell{transition:none}}
+
 </style>
 </head>
 <body>
@@ -142,7 +248,8 @@ body[data-theme="neon"] .progress-wrap{background:rgba(5,24,36,.65)}
       <div class="controls-heading"><strong>Choose your field</strong><div class="mode-line" role="group" aria-label="Game mode"><button id="mode-explorer" class="mode-btn active" type="button" aria-pressed="true">Explorer · 2 shields</button><button id="mode-classic" class="mode-btn" type="button" aria-pressed="false">Classic</button></div></div>
       <p id="mode-note" class="mode-note">Explorer gives you two safe mistakes so you can learn from a bad guess.</p>
       <div class="theme-strip" aria-label="Visual world selection"><div class="theme-label">Pick your world<small>Same puzzle, different atmosphere</small></div><div id="theme-picker" class="theme-options" role="group" aria-label="Board appearance">
-        <button class="theme-option active" type="button" data-theme-choice="sunburst" aria-pressed="true"><span class="preview sunburst" aria-hidden="true"></span>Sunburst</button>
+        <button class="theme-option" type="button" data-theme-choice="sunburst" aria-pressed="true"><span class="preview sunburst" aria-hidden="true"></span>Sunburst</button>
+        <button class="theme-option active" type="button" data-theme-choice="meadow" aria-pressed="true"><span class="preview meadow" aria-hidden="true"></span>Meadow</button>
         <button class="theme-option" type="button" data-theme-choice="orchard" aria-pressed="false"><span class="preview orchard" aria-hidden="true"></span>Orchard</button>
         <button class="theme-option" type="button" data-theme-choice="splash" aria-pressed="false"><span class="preview splash" aria-hidden="true"></span>Splash</button>
         <button class="theme-option" type="button" data-theme-choice="neon" aria-pressed="false"><span class="preview neon" aria-hidden="true"></span>Neon</button>
@@ -170,7 +277,7 @@ body[data-theme="neon"] .progress-wrap{background:rgba(5,24,36,.65)}
           <button id="restart" type="button" class="btn primary">↻ New field</button>
         </div>
       </div>
-      <div class="board-well" id="board-well"><div class="world-art" aria-hidden="true"><span class="sun-disc"></span><span class="cloud cloud-a"></span><span class="cloud cloud-b"></span><span class="hill hill-a"></span><span class="hill hill-b"></span><span class="tree t1"></span><span class="tree t2"></span><span class="tree t3"></span><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div><div class="board" id="board" role="grid" aria-label="Minefield. Click or press Enter to reveal. Right click, hold, or press F to flag."></div></div>
+      <div class="board-well" id="board-well"><div class="meadow-story-sign" aria-hidden="true"><strong>THE MOSSY MEADOW</strong><small>Uncover a trail through the garden</small></div><div class="world-art" aria-hidden="true"><span class="sun-disc"></span><span class="cloud cloud-a"></span><span class="cloud cloud-b"></span><span class="hill hill-a"></span><span class="hill hill-b"></span><span class="tree t1"></span><span class="tree t2"></span><span class="tree t3"></span><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div><div class="board" id="board" role="grid" aria-label="Minefield. Click or press Enter to reveal. Right click, hold, or press F to flag."></div></div>
       <div class="progress-wrap" aria-label="Safe tiles explored"><div class="progress-head"><span id="progress-title">Your discovery trail</span><span id="progress-label">0% explored</span></div><div class="progress-track" id="progress-track" role="progressbar" aria-label="Safe squares uncovered" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="progress-fill"></div></div></div>
       <div class="under-board"><p class="hint-text">Mouse: left-click reveal · right-click flag · click a revealed number to clear its neighbors after flagging.</p><p class="hint-text">Touch: select <b>Flag</b> or long-press a tile.</p></div>
       <div id="status" class="live-status" data-kind="normal" role="status" aria-live="polite"><span class="signal" aria-hidden="true"></span><span id="status-text">Your first reveal is always safe. Pick a tile to begin.</span></div>
@@ -209,8 +316,8 @@ body[data-theme="neon"] .progress-wrap{background:rgba(5,24,36,.65)}
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const DIFFICULTIES={starter:{rows:8,cols:8,mines:10},skilled:{rows:12,cols:12,mines:24},expert:{rows:16,cols:16,mines:46},master:{rows:16,cols:24,mines:80}};
-const THEMES=new Set(['sunburst','orchard','splash','neon']);
-function setTheme(name){const theme=THEMES.has(name)?name:'sunburst';document.body.dataset.theme=theme;document.querySelectorAll('[data-theme-choice]').forEach(b=>{const active=b.dataset.themeChoice===theme;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});document.querySelector('meta[name="theme-color"]').content=theme==='neon'?'#081427':theme==='orchard'?'#e8f8ed':theme==='splash'?'#e3f7fb':'#eaf4ff';storeSet('logic-sweep-theme-v1',theme);}
+const THEMES=new Set(['meadow','sunburst','orchard','splash','neon']);
+function setTheme(name){const theme=THEMES.has(name)?name:'meadow';document.body.dataset.theme=theme;document.querySelectorAll('[data-theme-choice]').forEach(b=>{const active=b.dataset.themeChoice===theme;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});document.querySelector('meta[name="theme-color"]').content=theme==='neon'?'#081427':theme==='meadow'?'#eff4de':theme==='orchard'?'#e8f8ed':theme==='splash'?'#e3f7fb':'#eaf4ff';storeSet('logic-sweep-theme-v1',theme);}
 
 const FLAG='<svg viewBox="0 0 28 28" aria-hidden="true"><path d="M8 3v22" stroke="#d0f6ff" stroke-width="2.5" stroke-linecap="round"/><path d="M9 4c7-3 7 3 15 0v13c-8 3-8-3-15 0Z" fill="#ffd071" stroke="#ffe4a4" stroke-width="1"/><path d="M4 25h9" stroke="#a1c7db" stroke-width="2.5" stroke-linecap="round"/></svg>';
 const MINE='<svg viewBox="0 0 30 30" aria-hidden="true"><g stroke="#ffd3dc" stroke-width="2.3" stroke-linecap="round"><path d="M15 2v5M15 23v5M2 15h5M23 15h5M5.8 5.8l3.7 3.7M20.5 20.5l3.7 3.7M24.2 5.8l-3.7 3.7M9.5 20.5l-3.7 3.7"/></g><circle cx="15" cy="15" r="8.5" fill="#ffe3ea"/><circle cx="12" cy="12" r="3.1" fill="#fd8ca4"/></svg>';
@@ -233,7 +340,7 @@ function coach(html){$('coach-output').innerHTML=html;}
 function updateModeUI(){$('mode-explorer').classList.toggle('active',state.mode==='explorer');$('mode-classic').classList.toggle('active',state.mode==='classic');$('mode-explorer').setAttribute('aria-pressed',String(state.mode==='explorer'));$('mode-classic').setAttribute('aria-pressed',String(state.mode==='classic'));$('mode-note').textContent=state.mode==='explorer'?'Explorer gives you two safe mistakes so you can learn from a bad guess.':'Classic mode: one mine ends the round. Every move counts.';}
 function updateDifficultyUI(){document.querySelectorAll('[data-diff]').forEach(b=>{let on=b.dataset.diff===state.diff;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});}
 function updateToolUI(){for(let t of ['reveal','flag']){const b=$(t+'-mode');const on=state.selected===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));}}
-function initBoard(diff=state.diff,custom=null){stopClock();const source=custom||DIFFICULTIES[diff];state.diff=diff;state.rows=source.rows;state.cols=source.cols;state.mines=source.mines;state.board=Array.from({length:state.rows*state.cols},()=>({mine:false,count:0,revealed:false,flagged:false,defused:false,exploded:false}));state.started=false;state.over=false;state.won=false;state.opened=0;state.flags=0;state.defused=0;state.seconds=0;state.shields=state.mode==='explorer'?2:0;state.hintCells=[];state.hintMessage='';state.firstIndex=-1;recentOpen=[];const size=state.cols>=24?28:state.cols>=16?32:state.cols>=12?36:43;const board=$('board');board.style.setProperty('--cols',state.cols);board.style.setProperty('--cell',size+'px');board.classList.remove('finished');board.innerHTML='';const fragment=document.createDocumentFragment();for(let i=0;i<state.board.length;i++){const b=document.createElement('button');b.type='button';b.className='cell';b.dataset.i=String(i);b.setAttribute('role','gridcell');b.setAttribute('aria-label',`Row ${Math.floor(i/state.cols)+1}, column ${i%state.cols+1}: hidden`);fragment.appendChild(b);}board.appendChild(fragment);$('board-well').scrollLeft=0;$('board-well').scrollTop=0;updateDifficultyUI();updateModeUI();updateToolUI();updateStats();status('Your first reveal is always safe. Pick a tile to begin.');coach('The numbers show how many mines touch each revealed square — including diagonals. Look for a move you can <b>prove</b> is safe.');}
+function initBoard(diff=state.diff,custom=null){stopClock();const source=custom||DIFFICULTIES[diff];state.diff=diff;state.rows=source.rows;state.cols=source.cols;state.mines=source.mines;state.board=Array.from({length:state.rows*state.cols},()=>({mine:false,count:0,revealed:false,flagged:false,defused:false,exploded:false}));state.started=false;state.over=false;state.won=false;state.opened=0;state.flags=0;state.defused=0;state.seconds=0;state.shields=state.mode==='explorer'?2:0;state.hintCells=[];state.hintMessage='';state.firstIndex=-1;recentOpen=[];const size=state.cols>=24?28:state.cols>=16?32:state.cols>=12?36:43;const board=$('board');board.dataset.cols=String(state.cols);board.style.setProperty('--cols',state.cols);board.style.setProperty('--cell',size+'px');board.classList.remove('finished');board.innerHTML='';const fragment=document.createDocumentFragment();for(let i=0;i<state.board.length;i++){const b=document.createElement('button');b.type='button';b.className='cell t'+((i*17+Math.floor(i/state.cols)*7)%4);b.dataset.i=String(i);b.setAttribute('role','gridcell');b.setAttribute('aria-label',`Row ${Math.floor(i/state.cols)+1}, column ${i%state.cols+1}: hidden`);fragment.appendChild(b);}board.appendChild(fragment);$('board-well').scrollLeft=0;$('board-well').scrollTop=0;updateDifficultyUI();updateModeUI();updateToolUI();updateStats();status('Your first reveal is always safe. Pick a tile to begin.');coach('The numbers show how many mines touch each revealed square — including diagonals. Look for a move you can <b>prove</b> is safe.');}
 function placeMines(first){const excluded=new Set([first,...neighbors(first)]);const eligible=[];for(let i=0;i<state.board.length;i++)if(!excluded.has(i))eligible.push(i);for(let i=eligible.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[eligible[i],eligible[j]]=[eligible[j],eligible[i]];}for(let i=0;i<state.mines;i++)state.board[eligible[i]].mine=true;for(let i=0;i<state.board.length;i++)if(!state.board[i].mine)state.board[i].count=neighbors(i).filter(n=>state.board[n].mine).length;state.started=true;state.firstIndex=first;startClock();}
 function reveal(i){if(state.over)return;const cell=state.board[i];if(cell.revealed||cell.flagged)return;state.hintCells=[];if(!state.started)placeMines(i);if(cell.mine){mineHit(i);return;}const queue=[i];let revealedCount=0;const seen=new Set();while(queue.length){let index=queue.pop();if(seen.has(index))continue;seen.add(index);const x=state.board[index];if(x.revealed||x.flagged||x.mine)continue;x.revealed=true;state.opened++;revealedCount++;recentOpen.push(index);if(x.count===0)for(let n of neighbors(index))if(!seen.has(n)&&!state.board[n].flagged)queue.push(n);}
 if(revealedCount){playSound('open');renderBoard();status(`Cleared ${revealedCount} safe ${revealedCount===1?'square':'squares'}. Use the numbered clues to plan your next move.`);}checkWin();}
@@ -242,7 +349,7 @@ function toggleFlag(i){if(state.over)return;const cell=state.board[i];if(cell.re
 function chord(i){if(state.over)return;const cell=state.board[i];if(!cell.revealed||cell.mine||cell.count===0)return;const ns=neighbors(i);const marked=ns.filter(n=>state.board[n].flagged).length;if(marked!==cell.count){status(`That ${cell.count} needs ${cell.count} adjacent flags; you've placed ${marked}. Check the surrounding squares.`);return;}const unrevealed=ns.filter(n=>!state.board[n].revealed&&!state.board[n].flagged);if(!unrevealed.length)return;for(let n of unrevealed){if(state.over)break;reveal(n);}if(!state.over)status('Neighbor sweep complete. This is safe only when your flags were correct.');}
 function onCellAction(i,kind='primary'){if(state.over)return;if(kind==='flag'||(kind==='primary'&&state.selected==='flag')){toggleFlag(i);return;}if(state.board[i].revealed)chord(i);else reveal(i);}
 function checkWin(){if(state.over||state.opened!==state.rows*state.cols-state.mines)return;state.over=true;state.won=true;stopClock();let allFlags=0;state.board.forEach(c=>{if(c.mine&&!c.defused){c.flagged=true;}if(c.flagged)allFlags++;});state.flags=allFlags;const prev=Number(storeGet(bestKey()));const record=!prev||state.seconds<prev;if(record)storeSet(bestKey(),String(Math.max(1,state.seconds)));renderBoard();playSound('win');status(`Field cleared in ${formatTime(state.seconds)}! ${record?'New personal best. ':' '}Every safe square found.`, 'win');coach('<b>Excellent deduction.</b> You cleared the full field. Try a larger board, or switch to Classic for an extra challenge.');burstWin();}
-function renderBoard(){const buttons=$('board').children;const recent=new Set(recentOpen);const hints=new Set(state.hintCells);const review=state.over&&!state.won;for(let i=0;i<state.board.length;i++){const c=state.board[i],b=buttons[i];if(!b)continue;const showMine=c.mine&&(c.revealed||review);const wrongFlag=review&&c.flagged&&!c.mine;const isFlagged=c.flagged&&!showMine;const classes=['cell'];if(c.revealed||showMine)classes.push('revealed');if(c.count&&!c.mine&&c.revealed)classes.push('n'+c.count);if(isFlagged)classes.push('flagged');if(showMine)classes.push('mine');if(c.defused)classes.push('defused');if(c.exploded)classes.push('exploded');if(wrongFlag)classes.push('wrong');if(hints.has(i)&&!state.over)classes.push('hint');if(recent.has(i)&&c.revealed&&!c.mine&&hasMotion())classes.push('newly');b.className=classes.join(' ');if(wrongFlag)b.textContent='×';else if(showMine)b.innerHTML=c.defused?CHECK:MINE;else if(isFlagged)b.innerHTML=FLAG;else if(c.revealed&&c.count)b.textContent=String(c.count);else b.textContent='';let label=`Row ${Math.floor(i/state.cols)+1}, column ${i%state.cols+1}: `;if(wrongFlag)label+='incorrect flag';else if(showMine)label+=c.defused?'defused mine':'mine';else if(c.flagged)label+='flagged';else if(c.revealed)label+=c.count?`${c.count} neighboring mines`:'clear';else label+='hidden';if(hints.has(i)&&!state.over)label+=', highlighted by hint';b.setAttribute('aria-label',label);b.setAttribute('aria-disabled',String(state.over));}recentOpen=[];updateStats();$('board').classList.toggle('finished',state.over);}
+function renderBoard(){const buttons=$('board').children;const recent=new Set(recentOpen);const hints=new Set(state.hintCells);const review=state.over&&!state.won;for(let i=0;i<state.board.length;i++){const c=state.board[i],b=buttons[i];if(!b)continue;const showMine=c.mine&&(c.revealed||review);const wrongFlag=review&&c.flagged&&!c.mine;const isFlagged=c.flagged&&!showMine;const classes=['cell','t'+((i*17+Math.floor(i/state.cols)*7)%4)];if(c.revealed||showMine)classes.push('revealed');if(c.count&&!c.mine&&c.revealed)classes.push('n'+c.count);if(isFlagged)classes.push('flagged');if(showMine)classes.push('mine');if(c.defused)classes.push('defused');if(c.exploded)classes.push('exploded');if(wrongFlag)classes.push('wrong');if(hints.has(i)&&!state.over)classes.push('hint');if(recent.has(i)&&c.revealed&&!c.mine&&hasMotion())classes.push('newly');b.className=classes.join(' ');if(wrongFlag)b.textContent='×';else if(showMine)b.innerHTML=c.defused?CHECK:MINE;else if(isFlagged)b.innerHTML=FLAG;else if(c.revealed&&c.count)b.textContent=String(c.count);else b.textContent='';let label=`Row ${Math.floor(i/state.cols)+1}, column ${i%state.cols+1}: `;if(wrongFlag)label+='incorrect flag';else if(showMine)label+=c.defused?'defused mine':'mine';else if(c.flagged)label+='flagged';else if(c.revealed)label+=c.count?`${c.count} neighboring mines`:'clear';else label+='hidden';if(hints.has(i)&&!state.over)label+=', highlighted by hint';b.setAttribute('aria-label',label);b.setAttribute('aria-disabled',String(state.over));}recentOpen=[];updateStats();$('board').classList.toggle('finished',state.over);}
 function setSelection(v){state.selected=v;updateToolUI();}
 // A deduction coach: build numeric constraints from *visible* clues only. Flags are
 // treated as unproven hypotheses, so incorrect flags cannot create false deductions.
@@ -274,7 +381,7 @@ $('sound').addEventListener('click',()=>{state.sound=!state.sound;storeSet('logi
 $('custom-toggle').addEventListener('click',()=>{let isOpen=$('custom-fields').classList.toggle('open');$('custom-toggle').setAttribute('aria-expanded',String(isOpen));$('custom-toggle').textContent=isOpen?'Hide custom dimensions −':'Set board dimensions +';});
 $('make-custom').addEventListener('click',()=>{const rows=Number($('custom-rows').value),cols=Number($('custom-cols').value),mines=Number($('custom-mines').value);const error=$('custom-error');error.textContent='';if(!Number.isInteger(rows)||!Number.isInteger(cols)||rows<6||rows>20||cols<6||cols>28){error.textContent='Use width 6–28 and height 6–20.';return;}const maxMines=Math.min(Math.floor(rows*cols*.28),rows*cols-9);if(!Number.isInteger(mines)||mines<1||mines>maxMines){error.textContent=`Use 1–${maxMines} mines for this board.`;return;}initBoard('custom',{rows,cols,mines});status(`Custom ${cols} × ${rows} field built with ${mines} mines. First reveal is safe.`);});
 window.addEventListener('resize',()=>{sizeCanvas();particlePool=[];});document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.timer!==null){stopClock();}else if(!document.hidden&&state.started&&!state.over){startClock();}});
-state.sound=storeGet('logic-sweep-sound-v1')==='true';$('sound').setAttribute('aria-pressed',String(state.sound));$('sound').setAttribute('aria-label',state.sound?'Turn off sound':'Turn on sound');$('sound').querySelector('.sound-off').setAttribute('d',state.sound?'M16 9c2 1.4 2 4.6 0 6m3-9c3 3 3 9 0 12':'m16 9 5 6m0-6-5 6');setTheme(storeGet('logic-sweep-theme-v1')||'sunburst');sizeCanvas();initBoard('starter');
+state.sound=storeGet('logic-sweep-sound-v1')==='true';$('sound').setAttribute('aria-pressed',String(state.sound));$('sound').setAttribute('aria-label',state.sound?'Turn off sound':'Turn on sound');$('sound').querySelector('.sound-off').setAttribute('d',state.sound?'M16 9c2 1.4 2 4.6 0 6m3-9c3 3 3 9 0 12':'m16 9 5 6m0-6-5 6');setTheme(storeGet('logic-sweep-theme-v1')||'meadow');sizeCanvas();initBoard('starter');
 })();
 </script>
 </body>
