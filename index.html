@@ -232,6 +232,7 @@ body[data-theme="meadow"] .logo svg path:first-child{stroke:#61914e}
 @media(prefers-reduced-motion:reduce){body[data-theme="meadow"] .cell{transition:none}}
 
 </style>
+<link rel="stylesheet" href="assets/planet.css">
 </head>
 <body>
 <canvas id="particles" aria-hidden="true"></canvas>
@@ -245,7 +246,39 @@ body[data-theme="meadow"] .logo svg path:first-child{stroke:#61914e}
   </header>
   <main class="main-grid">
     <section class="panel game-panel" aria-label="Logic Sweep game">
-      <div class="controls-heading"><strong>Choose your field</strong><div class="mode-line" role="group" aria-label="Game mode"><button id="mode-explorer" class="mode-btn active" type="button" aria-pressed="true">Explorer · 2 shields</button><button id="mode-classic" class="mode-btn" type="button" aria-pressed="false">Classic</button></div></div>
+      <nav class="playstyle-tabs" aria-label="Choose board presentation">
+  <button type="button" id="choose-flat" class="playstyle-tab" aria-pressed="false"><span class="playstyle-icon">▦</span><span>Classic Board<small>Flat field · Five themes</small></span></button>
+  <button type="button" id="choose-planet" class="playstyle-tab active" aria-pressed="true"><span class="playstyle-icon">◉</span><span>3D Planet<small>Rotate to explore</small></span><span class="new-tag">NEW</span></button>
+</nav>
+<div id="planet-game" class="planet-game" hidden>
+  <div class="planet-head"><div><p class="planet-kicker">LOGIC SWEEP · EXPEDITION MODE</p><h2>Secrets of the <em>Little Planet</em></h2><p>Spin the world. Read the clues. Discover every safe patch of ground.</p></div><div class="planet-mode-switch" role="group" aria-label="Planet rules"><button type="button" data-planet-mode="explorer" class="on">Explorer · 2 shields</button><button type="button" data-planet-mode="classic">Classic</button></div></div>
+  <div class="planet-levels" role="group" aria-label="Planet difficulty">
+    <button type="button" data-planet-level="sprout" class="on"><strong>Sprout</strong><small>12 × 8 · 14 mines</small></button>
+    <button type="button" data-planet-level="wanderer"><strong>Wanderer</strong><small>16 × 10 · 30 mines</small></button>
+    <button type="button" data-planet-level="explorer"><strong>Explorer</strong><small>20 × 12 · 51 mines</small></button>
+    <button type="button" data-planet-level="legend"><strong>Legend</strong><small>24 × 14 · 77 mines</small></button>
+  </div>
+  <div class="planet-content">
+    <section class="planet-stage" aria-label="Rotating minesweeper planet">
+      <div class="planet-stage-banner">THE MOSSY MEADOW · A WHOLE NEW WORLD</div>
+      <canvas id="planet-canvas" tabindex="0" role="application" aria-label="Interactive rotating spherical minefield. Drag to turn, click a tile to dig, right click to flag, arrow keys rotate. Enter digs at center; F flags at center."></canvas>
+      <div class="planet-crosshair" aria-hidden="true"><span></span></div>
+      <div class="planet-compass" aria-hidden="true">N <span>✦</span> S</div>
+      <div class="planet-stage-foot"><span>↔ Drag to turn</span><span>◎ Aim at the center</span><span>⊕ Scroll to zoom</span></div>
+    </section>
+    <div class="planet-dash">
+      <div class="planet-stats"><div><small>Mines left</small><strong id="planet-left">14</strong></div><div><small>Time</small><strong id="planet-time">0:00</strong></div><div><small>Shields</small><strong id="planet-shields">2</strong></div><div><small>Record</small><strong id="planet-best">—</strong></div></div>
+      <div class="planet-target"><div><small>YOUR CENTER TARGET</small><strong id="planet-target-title">Find a patch of ground</strong><span id="planet-target-state">Move the globe until a tile is under the ring.</span></div><span class="planet-target-glyph">⌖</span></div>
+      <div class="planet-tools"><div class="planet-tool-pair"><button type="button" id="planet-reveal" class="planet-tool active" aria-pressed="true">✦ Dig</button><button type="button" id="planet-flag" class="planet-tool" aria-pressed="false">⚑ Flag</button></div><button type="button" id="planet-act" class="planet-cta">Dig at target</button><button type="button" id="planet-hint">✧ Deduction hint</button><button type="button" id="planet-new">↻ New planet</button></div>
+      <div class="planet-progress"><div class="planet-progress-label"><span>Planet explored</span><span id="planet-percent">0%</span></div><div class="planet-progress-track"><div id="planet-progress-fill"></div></div></div>
+      <div class="planet-message" role="status" aria-live="polite" id="planet-message">Drag to turn the globe, then dig at the center target. Your opening move is guaranteed safe.</div>
+      <section class="planet-coach"><div class="planet-coach-label">YOUR DEDUCTION COACH</div><p id="planet-coach-text">Numbers tell how many neighboring patches have mines. The left and right edges of the map connect around the planet.</p></section>
+      <div class="planet-guide">Rotate with mouse, finger, or arrow keys. Click a visible patch to act on it, or use the center target and <b>Dig at target</b>. Right-click to flag. Press <kbd>F</kbd> to flag the target. Use <kbd>Enter</kbd> to dig and <kbd>Space</kbd> to apply the selected tool.</div>
+    </div>
+  </div>
+</div>
+
+<div class="controls-heading"><strong>Choose your field</strong><div class="mode-line" role="group" aria-label="Game mode"><button id="mode-explorer" class="mode-btn active" type="button" aria-pressed="true">Explorer · 2 shields</button><button id="mode-classic" class="mode-btn" type="button" aria-pressed="false">Classic</button></div></div>
       <p id="mode-note" class="mode-note">Explorer gives you two safe mistakes so you can learn from a bad guess.</p>
       <div class="theme-strip" aria-label="Visual world selection"><div class="theme-label">Pick your world<small>Same puzzle, different atmosphere</small></div><div id="theme-picker" class="theme-options" role="group" aria-label="Board appearance">
         <button class="theme-option" type="button" data-theme-choice="sunburst" aria-pressed="true"><span class="preview sunburst" aria-hidden="true"></span>Sunburst</button>
@@ -382,7 +415,9 @@ $('custom-toggle').addEventListener('click',()=>{let isOpen=$('custom-fields').c
 $('make-custom').addEventListener('click',()=>{const rows=Number($('custom-rows').value),cols=Number($('custom-cols').value),mines=Number($('custom-mines').value);const error=$('custom-error');error.textContent='';if(!Number.isInteger(rows)||!Number.isInteger(cols)||rows<6||rows>20||cols<6||cols>28){error.textContent='Use width 6–28 and height 6–20.';return;}const maxMines=Math.min(Math.floor(rows*cols*.28),rows*cols-9);if(!Number.isInteger(mines)||mines<1||mines>maxMines){error.textContent=`Use 1–${maxMines} mines for this board.`;return;}initBoard('custom',{rows,cols,mines});status(`Custom ${cols} × ${rows} field built with ${mines} mines. First reveal is safe.`);});
 window.addEventListener('resize',()=>{sizeCanvas();particlePool=[];});document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.timer!==null){stopClock();}else if(!document.hidden&&state.started&&!state.over){startClock();}});
 state.sound=storeGet('logic-sweep-sound-v1')==='true';$('sound').setAttribute('aria-pressed',String(state.sound));$('sound').setAttribute('aria-label',state.sound?'Turn off sound':'Turn on sound');$('sound').querySelector('.sound-off').setAttribute('d',state.sound?'M16 9c2 1.4 2 4.6 0 6m3-9c3 3 3 9 0 12':'m16 9 5 6m0-6-5 6');setTheme(storeGet('logic-sweep-theme-v1')||'meadow');sizeCanvas();initBoard('starter');
+window.logicSweepFlatClock=(active)=>{if(active && state.started && !state.over)startClock();else stopClock();};
 })();
 </script>
+<script src="assets/planet.js"></script>
 </body>
 </html>
